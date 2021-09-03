@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
 using OpenQA.Selenium;
@@ -9,7 +10,7 @@ namespace SaltyBetter
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             // CREATE OR LOAD SETTINGS FILE //
@@ -84,7 +85,7 @@ namespace SaltyBetter
                 {
                     hasBet = false;
                 }
-                Thread.Sleep(settings.waitTime);
+                await Task.Run(() => Thread.Sleep(settings.waitTime));
 
                 exitIfDriverOffSaltyBet();
             }
@@ -110,4 +111,3 @@ namespace SaltyBetter
         }
     }
 }
-
