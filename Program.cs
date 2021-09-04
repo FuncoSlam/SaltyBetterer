@@ -124,11 +124,16 @@ namespace SaltyBetter
                     switch (input[0])
                     {
                         case "exit":
+                            driver.Quit();
                             Environment.Exit(0);
                             break;
 
-                        default:
+                        case "bet":
+                            settings.betAmount = Int32.Parse(input[1]);
+                            break;
 
+                        default:
+                            Console.WriteLine("\nInvalid input");
                             break;
                     }
                 }
