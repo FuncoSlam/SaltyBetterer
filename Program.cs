@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
 using OpenQA.Selenium;
@@ -9,7 +10,7 @@ namespace SaltyBetter
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             // CREATE OR LOAD SETTINGS FILE //
@@ -63,6 +64,10 @@ namespace SaltyBetter
             IWebElement redButton = driver.FindElement(By.Id("player2"));
             IWebElement[] buttons = { redButton, blueButton };
 
+            // BEGIN ASYNCHRONOUSLY RECIEVING INPUTS //
+
+            Task task = processInputAsync();
+
             // EVERY 'waitTime' ms, IF BETTING IS AVAILABLE AND HASN'T BEEN DONE ALREADY, BET 'betAmount' SALT ON RANDOM SIDE //
 
             Random random = new Random();
@@ -84,7 +89,7 @@ namespace SaltyBetter
                 {
                     hasBet = false;
                 }
-                Thread.Sleep(settings.waitTime);
+                await Task.Run(() => Thread.Sleep(settings.waitTime));
 
                 exitIfDriverOffSaltyBet();
             }
@@ -104,10 +109,30 @@ namespace SaltyBetter
 
             void promptToEditSettingsFile()
             {
-                Console.Write("\n\nAn error likely related to SaltyBetterSettings.json occured.\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe is stored.\n\nPress any key to continue...");
+                Console.Write("\n\nAn error likely related to SaltyBetterSettings.json occured." +
+                    "\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe is stored." +
+                    "\n\nPress any key to continue...");
                 Console.Read();
+            }
+
+            async Task processInputAsync()
+            {
+                while (true)
+                {
+                    string[] input = await Task.Run(() => Console.ReadLine().Split(" "));
+
+                    switch (input[0])
+                    {
+                        case "exit":
+                            Environment.Exit(0);
+                            break;
+
+                        default:
+
+                            break;
+                    }
+                }
             }
         }
     }
 }
-
