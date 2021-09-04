@@ -1,0 +1,4 @@
+.editorconfig
+.vscode/settings.json
+obj/
+bin/
