@@ -24,14 +24,14 @@ namespace SaltyBetter
             }
             else
             {
-                File.WriteAllText(jsonFilePath, JsonSerializer.Serialize<Settings>(settings));
+                updateSettingsJson();
             }
 
             // CREATE CHROME DRIVER AND OPEN SALTYBET LOGIN PAGE //
 
             IWebDriver driver;
 
-            if (File.Exists(settings.chromeDriverPath + "/ChromeDriver.exe"))
+            if (File.Exists($"{settings.chromeDriverPath}/ChromeDriver.exe"))
             {
                 ChromeOptions options = new ChromeOptions();
                 options.AddArgument("--silent");
@@ -94,6 +94,13 @@ namespace SaltyBetter
                 exitIfDriverOffSaltyBet();
             }
 
+            void updateSettingsJson()
+            {
+                JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+                jsonSerializerOptions.WriteIndented = true;
+                File.WriteAllText(jsonFilePath, JsonSerializer.Serialize<Settings>(settings, jsonSerializerOptions));
+            }
+
             void exitIfDriverOffSaltyBet()
             {
                 try
@@ -109,7 +116,8 @@ namespace SaltyBetter
 
             void promptToEditSettingsFile()
             {
-                Console.Write("\n\nAn error likely related to SaltyBetterSettings.json occured." +
+                Console.Write(
+                    "\n\nAn error likely related to SaltyBetterSettings.json occured." +
                     "\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe is stored." +
                     "\n\nPress any key to continue...");
                 Console.Read();
@@ -130,6 +138,7 @@ namespace SaltyBetter
 
                         case "bet":
                             settings.betAmount = Int32.Parse(input[1]);
+                            updateSettingsJson();
                             break;
 
                         default:
