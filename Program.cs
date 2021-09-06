@@ -127,7 +127,7 @@ namespace SaltyBetter
             {
                 while (true)
                 {
-                    string[] input = await Task.Run(() => Console.ReadLine().Split(" "));
+                    string[] input = await Task.Run(() => Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries));
 
                     switch (input[0])
                     {
