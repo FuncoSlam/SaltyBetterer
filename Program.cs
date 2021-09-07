@@ -47,22 +47,11 @@ namespace SaltyBetter
 
             // LOGIN PROCESS //
 
-            IWebElement emailField = driver.FindElement(By.Id("email"));
-            IWebElement passwordField = driver.FindElement(By.Id("pword"));
-            IWebElement loginButton = driver.FindElement(By.ClassName("submit"));
-
-            emailField.SendKeys(settings.email);
-            passwordField.SendKeys(settings.password);
-            loginButton.Click();
-
-            exitIfDriverOffSaltyBet();
+            login();
 
             // COLLECT NECESARY ELEMENTS //
 
-            IWebElement wagerField = driver.FindElement(By.Id("wager"));
-            IWebElement blueButton = driver.FindElement(By.Id("player1"));
-            IWebElement redButton = driver.FindElement(By.Id("player2"));
-            IWebElement[] buttons = { redButton, blueButton };
+            collectElements();
 
             // BEGIN ASYNCHRONOUSLY RECIEVING INPUTS //
 
@@ -141,11 +130,36 @@ namespace SaltyBetter
                             updateSettingsJson();
                             break;
 
+                        case "refresh":
+                            // REFRESH THE PAGE WITHOUT BREAKING THINGS
+                            break;
+
                         default:
                             Console.WriteLine("\nInvalid input");
                             break;
                     }
                 }
+            }
+
+            void collectElements()
+            {
+            IWebElement wagerField = driver.FindElement(By.Id("wager"));
+            IWebElement blueButton = driver.FindElement(By.Id("player1"));
+            IWebElement redButton = driver.FindElement(By.Id("player2"));
+            IWebElement[] buttons = { redButton, blueButton };
+            }
+
+            void login()
+            {
+            IWebElement emailField = driver.FindElement(By.Id("email"));
+            IWebElement passwordField = driver.FindElement(By.Id("pword"));
+            IWebElement loginButton = driver.FindElement(By.ClassName("submit"));
+
+            emailField.SendKeys(settings.email);
+            passwordField.SendKeys(settings.password);
+            loginButton.Click();
+
+            exitIfDriverOffSaltyBet();
             }
         }
     }
