@@ -1,2 +1,5 @@
 .editorconfig
 .vscode/settings.json
+/obj
+/bin
+.SaltyBetterSettings.json
