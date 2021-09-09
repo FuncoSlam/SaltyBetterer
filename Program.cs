@@ -71,6 +71,7 @@ namespace SaltyBetter
 
             Random random = new Random();
             bool hasBet = false;
+            bool syncRefresh = false;
 
             while (true)
             {
@@ -89,6 +90,13 @@ namespace SaltyBetter
                     hasBet = false;
                 }
                 await Task.Run(() => Thread.Sleep(settings.waitTime));
+
+                if (syncRefresh)
+                {
+                    driver.Navigate().Refresh();
+                    collectElements();
+                    syncRefresh = !syncRefresh;
+                }
 
                 exitIfDriverOffSaltyBet();
             }
@@ -141,7 +149,7 @@ namespace SaltyBetter
                             break;
 
                         case "refresh":
-                            // REFRESH THE PAGE WITHOUT BREAKING THINGS
+                            syncRefresh = true;
                             break;
 
                         default:
