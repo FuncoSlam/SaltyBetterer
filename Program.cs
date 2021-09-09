@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
@@ -47,9 +48,18 @@ namespace SaltyBetter
 
             // LOGIN PROCESS //
 
+            IWebElement emailField;
+            IWebElement passwordField;
+            IWebElement loginButton;
+
             login();
 
             // COLLECT NECESARY ELEMENTS //
+
+            IWebElement wagerField;
+            IWebElement blueButton;
+            IWebElement redButton;
+            List<IWebElement> buttons;
 
             collectElements();
 
@@ -70,7 +80,7 @@ namespace SaltyBetter
                     {
                         wagerField.Clear();
                         wagerField.SendKeys(settings.betAmount.ToString());
-                        buttons[random.Next(buttons.Length)].Click();
+                        buttons[random.Next(buttons.Count)].Click();
                         hasBet = true;
                     }
                 }
@@ -143,23 +153,23 @@ namespace SaltyBetter
 
             void collectElements()
             {
-            IWebElement wagerField = driver.FindElement(By.Id("wager"));
-            IWebElement blueButton = driver.FindElement(By.Id("player1"));
-            IWebElement redButton = driver.FindElement(By.Id("player2"));
-            IWebElement[] buttons = { redButton, blueButton };
+                wagerField = driver.FindElement(By.Id("wager"));
+                blueButton = driver.FindElement(By.Id("player1"));
+                redButton = driver.FindElement(By.Id("player2"));
+                buttons = new List<IWebElement>() { blueButton, redButton };
             }
 
             void login()
             {
-            IWebElement emailField = driver.FindElement(By.Id("email"));
-            IWebElement passwordField = driver.FindElement(By.Id("pword"));
-            IWebElement loginButton = driver.FindElement(By.ClassName("submit"));
+                emailField = driver.FindElement(By.Id("email"));
+                passwordField = driver.FindElement(By.Id("pword"));
+                loginButton = driver.FindElement(By.ClassName("submit"));
 
-            emailField.SendKeys(settings.email);
-            passwordField.SendKeys(settings.password);
-            loginButton.Click();
+                emailField.SendKeys(settings.email);
+                passwordField.SendKeys(settings.password);
+                loginButton.Click();
 
-            exitIfDriverOffSaltyBet();
+                exitIfDriverOffSaltyBet();
             }
         }
     }
