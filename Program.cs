@@ -156,6 +156,7 @@ namespace SaltyBetter
                             Console.WriteLine("\nInvalid input");
                             break;
                     }
+                    Console.WriteLine(lineBreakChar("-".ToCharArray()[0]));
                 }
             }
 
@@ -178,7 +179,13 @@ namespace SaltyBetter
                 loginButton.Click();
 
                 exitIfDriverOffSaltyBet();
-            }
+            }     
+        string lineBreakChar(char lineBreakChar)
+        {
+            string tabs = new string(lineBreakChar, Console.BufferWidth);
+            return $"{tabs}\n";
+        }
         }
     }
+
 }
