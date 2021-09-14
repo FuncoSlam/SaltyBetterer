@@ -125,7 +125,7 @@ namespace SaltyBetter
             {
                 Console.Write(
                     "\n\nAn error likely related to SaltyBetterSettings.json occured." +
-                    "\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe is stored." +
+                    "\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe has been installed." +
                     "\n\nPress any key to continue...");
                 Console.Read();
             }
