@@ -10,7 +10,7 @@ namespace SaltyBetter
 {
     class Program
     {
-        public Settings settings = new Settings();
+        Settings settings = new Settings();
 
         IWebDriver driver;
 
@@ -87,13 +87,19 @@ namespace SaltyBetter
 
                 if (syncRefresh)
                 {
-                    driver.Navigate().Refresh();
-                    webElements.CollectElements(driver);
+                    Refresh(webElements);
                     syncRefresh = !syncRefresh;
                 }
 
                 ExitIfDriverOffSaltyBet();
             }
+        }
+
+        private void Refresh(WebElements webElements)
+        {
+            driver.Navigate().Refresh();
+            Thread.Sleep(1000); // Needed to prevent errors collecting elements before the page has refreshed. 1s may be overkill.
+            webElements.CollectElements(driver);
         }
 
         public void ExitIfDriverOffSaltyBet()
