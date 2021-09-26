@@ -53,13 +53,13 @@ namespace SaltyBetter
 
             // LOGIN PROCESS //
 
-            LoginInfo loginInfo = new LoginInfo(this);
+            LoginInfo loginInfo = new LoginInfo(settings);
             loginInfo.Login(driver);
+            ExitIfDriverOffSaltyBet();
 
             // COLLECT NECESARY ELEMENTS //
 
-            WebElements webElements = new WebElements();
-            webElements.CollectElements(driver);
+            WebElements webElements = new WebElements(driver);
 
             // BEGIN ASYNCHRONOUSLY RECIEVING INPUTS //
 
@@ -92,11 +92,11 @@ namespace SaltyBetter
                     syncRefresh = !syncRefresh;
                 }
 
-                ExitIfDriverOffSaltyBet(driver);
+                ExitIfDriverOffSaltyBet();
             }
         }
 
-        public void ExitIfDriverOffSaltyBet(IWebDriver driver)
+        public void ExitIfDriverOffSaltyBet()
         {
             try
             {

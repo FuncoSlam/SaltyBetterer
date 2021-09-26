@@ -7,11 +7,11 @@ namespace SaltyBetter
         IWebElement emailField;
         IWebElement passwordField;
         IWebElement loginButton;
-        Program program;
+        Settings settings;
 
-        public LoginInfo(Program _program)
+        public LoginInfo(Settings _settings)
         {
-            program = _program;
+            settings = _settings;
         }
 
         public void Login(IWebDriver driver)
@@ -20,11 +20,9 @@ namespace SaltyBetter
             passwordField = driver.FindElement(By.Id("pword"));
             loginButton = driver.FindElement(By.ClassName("submit"));
 
-            emailField.SendKeys(program.settings.email);
-            passwordField.SendKeys(program.settings.password);
+            emailField.SendKeys(settings.email);
+            passwordField.SendKeys(settings.password);
             loginButton.Click();
-
-            program.ExitIfDriverOffSaltyBet(driver);
         }
     }
 }

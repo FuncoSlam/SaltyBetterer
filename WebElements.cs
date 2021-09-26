@@ -11,6 +11,11 @@ namespace SaltyBetter
         public IWebElement redButton;
         public List<IWebElement> buttons;
 
+        public WebElements(IWebDriver driver)
+        {
+            CollectElements(driver);
+        }
+
         public void CollectElements(IWebDriver driver)
         {
             Thread.Sleep(1000);
