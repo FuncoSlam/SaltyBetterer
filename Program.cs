@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
@@ -11,12 +10,20 @@ namespace SaltyBetter
 {
     class Program
     {
-        static async Task Main(string[] args)
+        public Settings settings = new Settings();
+
+        IWebDriver driver;
+
+        string jsonFilePath = "./SaltyBetterSettings.json";
+
+        Random random = new Random();
+        bool hasBet = false;
+        bool syncRefresh = false;
+
+        public async Task Run()
         {
 
             // CREATE OR LOAD SETTINGS FILE //
-
-            Settings settings = new Settings();
 
             string jsonFilePath = "./SaltyBetterSettings.json";
             if (File.Exists(jsonFilePath))
@@ -25,12 +32,10 @@ namespace SaltyBetter
             }
             else
             {
-                updateSettingsJson();
+                UpdateSettingsJson();
             }
 
             // CREATE CHROME DRIVER AND OPEN SALTYBET LOGIN PAGE //
-
-            IWebDriver driver;
 
             if (File.Exists($"{settings.chromeDriverPath}/ChromeDriver.exe"))
             {
@@ -42,46 +47,35 @@ namespace SaltyBetter
             }
             else
             {
-                promptToEditSettingsFile();
+                PromptToEditSettingsFile();
                 return;
             }
 
             // LOGIN PROCESS //
 
-            IWebElement emailField;
-            IWebElement passwordField;
-            IWebElement loginButton;
-
-            login();
+            LoginInfo loginInfo = new LoginInfo(this);
+            loginInfo.Login(driver);
 
             // COLLECT NECESARY ELEMENTS //
 
-            IWebElement wagerField;
-            IWebElement blueButton;
-            IWebElement redButton;
-            List<IWebElement> buttons;
-
-            collectElements();
+            WebElements webElements = new WebElements();
+            webElements.CollectElements(driver);
 
             // BEGIN ASYNCHRONOUSLY RECIEVING INPUTS //
 
-            Task task = processInputAsync();
+            Task task = ProcessInputAsync(driver, settings);
 
             // EVERY 'waitTime' ms, IF BETTING IS AVAILABLE AND HASN'T BEEN DONE ALREADY, BET 'betAmount' SALT ON RANDOM SIDE //
 
-            Random random = new Random();
-            bool hasBet = false;
-            bool syncRefresh = false;
-
             while (true)
             {
-                if (wagerField.Displayed)
+                if (webElements.wagerField.Displayed)
                 {
                     if (!hasBet)
                     {
-                        wagerField.Clear();
-                        wagerField.SendKeys(settings.betAmount.ToString());
-                        buttons[random.Next(buttons.Count)].Click();
+                        webElements.wagerField.Clear();
+                        webElements.wagerField.SendKeys(settings.betAmount.ToString());
+                        webElements.buttons[random.Next(webElements.buttons.Count)].Click();
                         hasBet = true;
                     }
                 }
@@ -94,106 +88,83 @@ namespace SaltyBetter
                 if (syncRefresh)
                 {
                     driver.Navigate().Refresh();
-                    collectElements();
+                    webElements.CollectElements(driver);
                     syncRefresh = !syncRefresh;
                 }
 
-                exitIfDriverOffSaltyBet();
-            }
-
-            void updateSettingsJson()
-            {
-                JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
-                jsonSerializerOptions.WriteIndented = true;
-                File.WriteAllText(jsonFilePath, JsonSerializer.Serialize<Settings>(settings, jsonSerializerOptions));
-            }
-
-            void exitIfDriverOffSaltyBet()
-            {
-                try
-                {
-                    driver.FindElement(By.Id("sbettorswrapper"));
-                }
-                catch
-                {
-                    driver.Quit();
-                    Environment.Exit(0);
-                }
-            }
-
-            void promptToEditSettingsFile()
-            {
-                Console.Write(
-                    "\n\nAn error likely related to SaltyBetterSettings.json occured." +
-                    "\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe has been installed." +
-                    "\n\nPress any key to continue...");
-                Console.Read();
-            }
-
-            async Task processInputAsync()
-            {
-                while (true)
-                {
-                    string[] input = await Task.Run(() => userPrompt());
-
-                    switch (input[0])
-                    {
-                        case "exit":
-                            driver.Quit();
-                            Environment.Exit(0);
-                            break;
-
-                        case "bet":
-                            settings.betAmount = Int32.Parse(input[1]);
-                            updateSettingsJson();
-                            break;
-
-                        case "refresh":
-                            syncRefresh = true;
-                            break;
-
-                        default:
-                            Console.WriteLine("\nInvalid input");
-                            break;
-                    }
-                    Console.WriteLine(lineBreak("-".ToCharArray()[0]));
-                }
-            }
-
-            string[] userPrompt()
-            {
-                Console.Write(">>> ");
-                return Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            }
-
-            void collectElements()
-            {
-                Thread.Sleep(1000);
-                wagerField = driver.FindElement(By.Id("wager"));
-                blueButton = driver.FindElement(By.Id("player1"));
-                redButton = driver.FindElement(By.Id("player2"));
-                buttons = new List<IWebElement>() { blueButton, redButton };
-            }
-
-            void login()
-            {
-                emailField = driver.FindElement(By.Id("email"));
-                passwordField = driver.FindElement(By.Id("pword"));
-                loginButton = driver.FindElement(By.ClassName("submit"));
-
-                emailField.SendKeys(settings.email);
-                passwordField.SendKeys(settings.password);
-                loginButton.Click();
-
-                exitIfDriverOffSaltyBet();
-            }
-
-            string lineBreak(char lineBreakChar)
-            {
-                string tabs = new string(lineBreakChar, Console.BufferWidth);
-                return $"{tabs}\n";
+                ExitIfDriverOffSaltyBet(driver);
             }
         }
-    }
 
+        public void ExitIfDriverOffSaltyBet(IWebDriver driver)
+        {
+            try
+            {
+                driver.FindElement(By.Id("sbettorswrapper"));
+            }
+            catch
+            {
+                driver.Quit();
+                Environment.Exit(0);
+            }
+        }
+
+        string[] UserPrompt()
+        {
+            Console.Write(">>> ");
+            return Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        void UpdateSettingsJson()
+        {
+            JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+            jsonSerializerOptions.WriteIndented = true;
+            File.WriteAllText(jsonFilePath, JsonSerializer.Serialize<Settings>(settings, jsonSerializerOptions));
+        }
+
+        void PromptToEditSettingsFile()
+        {
+            Console.Write(
+                "\n\nAn error likely related to SaltyBetterSettings.json occured." +
+                "\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe has been installed." +
+                "\n\nPress any key to continue...");
+            Console.Read();
+        }
+
+        async Task ProcessInputAsync(IWebDriver driver, Settings settings)
+        {
+            while (true)
+            {
+                string[] input = await Task.Run(() => UserPrompt());
+
+                switch (input[0])
+                {
+                    case "exit":
+                        driver.Quit();
+                        Environment.Exit(0);
+                        break;
+
+                    case "bet":
+                        settings.betAmount = Int32.Parse(input[1]);
+                        UpdateSettingsJson();
+                        break;
+
+                    case "refresh":
+                        syncRefresh = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("\nInvalid input");
+                        break;
+                }
+                Console.WriteLine(LineBreak("-".ToCharArray()[0]));
+            }
+        }
+
+        string LineBreak(char lineBreakChar)
+        {
+            string tabs = new string(lineBreakChar, Console.BufferWidth);
+            return $"{tabs}\n";
+        }
+    }
 }
