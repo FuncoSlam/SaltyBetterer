@@ -134,7 +134,7 @@ namespace SaltyBetter
             {
                 while (true)
                 {
-                    string[] input = await Task.Run(() => Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries));
+                    string[] input = await Task.Run(() => userPrompt());
 
                     switch (input[0])
                     {
@@ -156,12 +156,19 @@ namespace SaltyBetter
                             Console.WriteLine("\nInvalid input");
                             break;
                     }
-                    Console.WriteLine(lineBreakChar("-".ToCharArray()[0]));
+                    Console.WriteLine(lineBreak("-".ToCharArray()[0]));
                 }
+            }
+
+            string[] userPrompt()
+            {
+                Console.Write(">>> ");
+                return Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
             }
 
             void collectElements()
             {
+                Thread.Sleep(1000);
                 wagerField = driver.FindElement(By.Id("wager"));
                 blueButton = driver.FindElement(By.Id("player1"));
                 redButton = driver.FindElement(By.Id("player2"));
@@ -179,12 +186,13 @@ namespace SaltyBetter
                 loginButton.Click();
 
                 exitIfDriverOffSaltyBet();
-            }     
-        string lineBreakChar(char lineBreakChar)
-        {
-            string tabs = new string(lineBreakChar, Console.BufferWidth);
-            return $"{tabs}\n";
-        }
+            }
+
+            string lineBreak(char lineBreakChar)
+            {
+                string tabs = new string(lineBreakChar, Console.BufferWidth);
+                return $"{tabs}\n";
+            }
         }
     }
 
