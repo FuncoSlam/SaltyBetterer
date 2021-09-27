@@ -3,14 +3,14 @@ using OpenQA.Selenium;
 
 namespace SaltyBetter
 {
-    class WebElements
+    class SaltyWebElements
     {
         public IWebElement wagerField;
         public IWebElement blueButton;
         public IWebElement redButton;
         public List<IWebElement> buttons;
 
-        public WebElements(IWebDriver driver)
+        public SaltyWebElements(IWebDriver driver)
         {
             CollectElements(driver);
         }

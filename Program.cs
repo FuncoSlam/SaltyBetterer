@@ -59,7 +59,7 @@ namespace SaltyBetter
 
             // COLLECT NECESARY ELEMENTS //
 
-            WebElements webElements = new WebElements(driver);
+            SaltyWebElements webElements = new SaltyWebElements(driver);
 
             // BEGIN ASYNCHRONOUSLY RECIEVING INPUTS //
 
@@ -95,7 +95,7 @@ namespace SaltyBetter
             }
         }
 
-        private void Refresh(WebElements webElements)
+        private void Refresh(SaltyWebElements webElements)
         {
             driver.Navigate().Refresh();
             Thread.Sleep(1000); // Needed to prevent errors collecting elements before the page has refreshed. 1s may be overkill.
