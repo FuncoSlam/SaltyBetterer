@@ -83,6 +83,7 @@ namespace SaltyBetter
                 {
                     hasBet = false;
                 }
+                
                 await Task.Run(() => Thread.Sleep(settings.waitTime));
 
                 if (syncRefresh)
