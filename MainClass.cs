@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 
-namespace SaltyBetter
+namespace SaltyBetter;
+
+class MainClass
 {
-    class MainClass
+    static async Task Main(string[] args)
     {
-        static async Task Main(string[] args)
-        {
-            Program program = new Program();
-            await program.Run();
-        }
+        Program program = new Program();
+        await program.Run();
     }
 }
+
