@@ -10,15 +10,15 @@ namespace SaltyBetter;
 
 class Program
 {
-    Settings settings = new Settings();
+    public Settings settings = new Settings();
 
-    IWebDriver driver;
+    public IWebDriver driver;
 
     string jsonFilePath = "./SaltyBetterSettings.json";
 
     Random random = new Random();
     bool hasBet = false;
-    bool syncRefresh = false;
+    public bool syncRefresh = false;
 
     public async Task Run()
     {
@@ -122,7 +122,7 @@ class Program
         return Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
     }
 
-    void UpdateSettingsJson()
+    public void UpdateSettingsJson()
     {
         JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
         jsonSerializerOptions.WriteIndented = true;
@@ -140,30 +140,14 @@ class Program
 
     async Task ProcessInputAsync(IWebDriver driver, Settings settings)
     {
+        InputParser inputParser = new InputParser(this);
+
         while (true)
         {
             string[] input = await Task.Run(() => UserPrompt());
 
-            switch (input[0])
-            {
-                case "exit":
-                    driver.Quit();
-                    Environment.Exit(0);
-                    break;
+            inputParser.Parse(input);
 
-                case "bet":
-                    settings.betAmount = Int32.Parse(input[1]);
-                    UpdateSettingsJson();
-                    break;
-
-                case "refresh":
-                    syncRefresh = true;
-                    break;
-
-                default:
-                    Console.WriteLine("\nInvalid input");
-                    break;
-            }
             Console.WriteLine(LineBreak("-".ToCharArray()[0]));
         }
     }
