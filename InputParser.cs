@@ -12,10 +12,10 @@ class InputParser
         program = _program;
 
         commands = new Command[] {
-            new Command("exit", new Action(ExitCommand)),
-            new Command("refresh", new Action(RefreshCommand)),
-            new Command("clear", new Action(ClearCommand)),
-            new Command("bet", new Action<string>(BetCommand))
+            new ("exit", new Action(ExitCommand)),
+            new ("refresh", new Action(RefreshCommand)),
+            new ("clear", new Action(ClearCommand)),
+            new ("bet", new Action<string>(BetCommand))
         };
     }
 
