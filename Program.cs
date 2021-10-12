@@ -16,7 +16,7 @@ class Program
 
     readonly string jsonFilePath = "./SaltyBetterSettings.json";
 
-    Random random = new();
+    readonly Random random = new();
     bool hasBet = false;
     public bool syncRefresh = false;
 
