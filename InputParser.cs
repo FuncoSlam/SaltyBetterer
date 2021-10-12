@@ -12,17 +12,25 @@ class InputParser
         program = _program;
 
         commands = new Command[] {
-            new ("exit", new Action(ExitCommand)),
-            new ("refresh", new Action(RefreshCommand)),
-            new ("clear", new Action(ClearCommand)),
-            new ("bet", new Action<string>(BetCommand))
+            new ("exit", new Action(ExitCommand), "Exits the program"),
+            new ("refresh", new Action(RefreshCommand), "Safely refreshes the SaltyBet page"),
+            new ("clear", new Action(ClearCommand), "Clears text from the console"),
+            new ("bet", new Action<string>(BetCommand), "Changes the bet amount permanently, takes a number"),
+            new ("help", new Action(HelpCommand), "Displays all commands with descriptions, this is probably that one")
         };
     }
 
     public void Parse(string[] input)
     {
+        Console.Write($"\n");
+
         foreach (Command command in commands)
         {
+            if (input.Length == 0)
+            {
+                DefaultCommand();
+                return;
+            }
             if (input[0] == command.Name)
             {
                 if (input.Length > 1)
@@ -83,5 +91,15 @@ class InputParser
     private void DefaultCommand()
     {
         Console.WriteLine("\nInvalid input");
+    }
+
+    private void HelpCommand()
+    {
+        foreach (Command command in commands)
+        {
+            string commandNamePlusSpaces = $"\"{command.Name}\"".PadRight(Command.MaxCommandNameLength);
+            Console.Write($"{commandNamePlusSpaces} - {command.Description}\n");
+        }
+        Console.Write($"\n");
     }
 }
