@@ -8,6 +8,8 @@ class Command
     public Delegate Function { get; }
     public string Description = null;
 
+    public const int MaxCommandNameLength = 14;
+
     public Command(string name, Action function)
     {
         Name = name;
