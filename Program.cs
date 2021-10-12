@@ -10,13 +10,13 @@ namespace SaltyBetter;
 
 class Program
 {
-    public Settings settings = new Settings();
+    public Settings settings = new();
 
     public IWebDriver driver;
 
-    string jsonFilePath = "./SaltyBetterSettings.json";
+    readonly string jsonFilePath = "./SaltyBetterSettings.json";
 
-    Random random = new Random();
+    Random random = new();
     bool hasBet = false;
     public bool syncRefresh = false;
 
@@ -39,11 +39,13 @@ class Program
 
         if (File.Exists($"{settings.chromeDriverPath}/ChromeDriver.exe"))
         {
-            ChromeOptions options = new ChromeOptions();
+            ChromeOptions options = new();
             options.AddArgument("--silent");
             options.AddArgument("--log-level=3");
-            driver = new ChromeDriver(settings.chromeDriverPath, options);
-            driver.Url = "https://www.saltybet.com/authenticate?signin=1";
+            driver = new ChromeDriver(settings.chromeDriverPath, options)
+            {
+                Url = "https://www.saltybet.com/authenticate?signin=1"
+            };
         }
         else
         {
@@ -53,13 +55,14 @@ class Program
 
         // LOGIN PROCESS //
 
-        LoginInfo loginInfo = new LoginInfo(settings);
+        LoginInfo loginInfo = new(settings);
         loginInfo.Login(driver);
         ExitIfDriverOffSaltyBet();
+        Console.Clear();
 
         // COLLECT NECESARY ELEMENTS //
 
-        SaltyWebElements webElements = new SaltyWebElements(driver);
+        SaltyWebElements webElements = new(driver);
 
         // BEGIN ASYNCHRONOUSLY RECIEVING INPUTS //
 
@@ -116,7 +119,7 @@ class Program
         }
     }
 
-    string[] UserPrompt()
+    static string[] UserPrompt()
     {
         Console.Write(">>> ");
         return Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -124,23 +127,23 @@ class Program
 
     public void UpdateSettingsJson()
     {
-        JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+        JsonSerializerOptions jsonSerializerOptions = new();
         jsonSerializerOptions.WriteIndented = true;
         File.WriteAllText(jsonFilePath, JsonSerializer.Serialize<Settings>(settings, jsonSerializerOptions));
     }
 
-    void PromptToEditSettingsFile()
+    static void PromptToEditSettingsFile()
     {
         Console.Write(
             "\n\nAn error likely related to SaltyBetterSettings.json occured." +
-            "\nFill it out completely with both twitch login details and the FOLDER in which ChromeDriver.exe has been installed." +
+            "\nFill it out with both your SaltyBet login details and an absolute path to the FOLDER in which ChromeDriver.exe has been installed." +
             "\n\nPress any key to continue...");
         Console.Read();
     }
 
     async Task ProcessInputAsync(IWebDriver driver, Settings settings)
     {
-        InputParser inputParser = new InputParser(this);
+        InputParser inputParser = new(this);
 
         while (true)
         {
@@ -152,9 +155,9 @@ class Program
         }
     }
 
-    string LineBreak(char lineBreakChar)
+    static string LineBreak(char lineBreakChar)
     {
-        string tabs = new string(lineBreakChar, Console.BufferWidth);
+        string tabs = new(lineBreakChar, Console.BufferWidth);
         return $"{tabs}\n";
     }
 }
