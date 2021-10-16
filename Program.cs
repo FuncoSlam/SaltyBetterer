@@ -37,12 +37,12 @@ class Program
 
         // CREATE CHROME DRIVER AND OPEN SALTYBET LOGIN PAGE //
 
-        if (File.Exists($"{settings.chromeDriverPath}/ChromeDriver.exe"))
+        if (File.Exists($"{settings.ChromeDriverPath}/ChromeDriver.exe"))
         {
             ChromeOptions options = new();
             options.AddArgument("--silent");
             options.AddArgument("--log-level=3");
-            driver = new ChromeDriver(settings.chromeDriverPath, options)
+            driver = new ChromeDriver(settings.ChromeDriverPath, options)
             {
                 Url = "https://www.saltybet.com/authenticate?signin=1"
             };
@@ -77,7 +77,7 @@ class Program
                 if (!hasBet)
                 {
                     webElements.wagerField.Clear();
-                    webElements.wagerField.SendKeys(settings.betAmount.ToString());
+                    webElements.wagerField.SendKeys(settings.BeAmount.ToString());
                     webElements.buttons[random.Next(webElements.buttons.Count)].Click();
                     hasBet = true;
                 }
@@ -87,7 +87,7 @@ class Program
                 hasBet = false;
             }
 
-            await Task.Run(() => Thread.Sleep(settings.waitTime));
+            await Task.Run(() => Thread.Sleep(settings.WaitTime));
 
             if (syncRefresh)
             {

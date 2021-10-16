@@ -2,18 +2,18 @@ namespace SaltyBetter;
 
 class Settings
 {
-    public string email { get; set; }
-    public string password { get; set; }
-    public int waitTime { get; set; }
-    public string chromeDriverPath { get; set; }
-    public int betAmount { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+    public int WaitTime { get; set; }
+    public string ChromeDriverPath { get; set; }
+    public int BeAmount { get; set; }
 
     public Settings()
     {
-        email = "";
-        password = "";
-        waitTime = 1000;
-        chromeDriverPath = "";
-        betAmount = 1;
+        Email = "";
+        Password = "";
+        WaitTime = 1000;
+        ChromeDriverPath = "";
+        BeAmount = 1;
     }
 }

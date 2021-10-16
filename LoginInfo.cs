@@ -4,14 +4,15 @@ namespace SaltyBetter;
 
 class LoginInfo
 {
-    IWebElement emailField;
-    IWebElement passwordField;
-    IWebElement loginButton;
-    Settings settings;
+    private IWebElement emailField;
+    private IWebElement passwordField;
+    private IWebElement loginButton;
 
-    public LoginInfo(Settings _settings)
+    readonly Settings Settings;
+
+    public LoginInfo(Settings Settings)
     {
-        settings = _settings;
+        this.Settings = Settings;
     }
 
     public void Login(IWebDriver driver)
@@ -20,8 +21,8 @@ class LoginInfo
         passwordField = driver.FindElement(By.Id("pword"));
         loginButton = driver.FindElement(By.ClassName("submit"));
 
-        emailField.SendKeys(settings.email);
-        passwordField.SendKeys(settings.password);
+        emailField.SendKeys(Settings.Email);
+        passwordField.SendKeys(Settings.Password);
         loginButton.Click();
     }
 }

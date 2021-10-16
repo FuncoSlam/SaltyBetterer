@@ -7,9 +7,9 @@ class InputParser
     private Program program;
     private Command[] commands;
 
-    public InputParser(Program _program)
+    public InputParser(Program program)
     {
-        program = _program;
+        this.program = program;
 
         commands = new Command[] {
             new ("exit", new Action(ExitCommand), "Exits the program"),
@@ -68,7 +68,7 @@ class InputParser
 
     private void BetCommand(string bet)
     {
-        program.settings.betAmount = Int32.Parse(bet);
+        program.settings.BeAmount = Int32.Parse(bet);
         program.UpdateSettingsJson();
     }
 

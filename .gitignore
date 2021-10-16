@@ -387,9 +387,5 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 .editorconfig
-.vscode/
-.vs/
-obj/
-bin/
 SaltyBetterSettings.json
 .properties/
