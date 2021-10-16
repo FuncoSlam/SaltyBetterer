@@ -68,7 +68,7 @@ class InputParser
 
     private void BetCommand(string bet)
     {
-        program.settings.BeAmount = Int32.Parse(bet);
+        program.settings.BetAmount = Int32.Parse(bet);
         program.UpdateSettingsJson();
     }
 

@@ -77,7 +77,7 @@ class Program
                 if (!hasBet)
                 {
                     webElements.wagerField.Clear();
-                    webElements.wagerField.SendKeys(settings.BeAmount.ToString());
+                    webElements.wagerField.SendKeys(settings.BetAmount.ToString());
                     webElements.buttons[random.Next(webElements.buttons.Count)].Click();
                     hasBet = true;
                 }
