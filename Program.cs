@@ -66,7 +66,7 @@ class Program
 
         // BEGIN ASYNCHRONOUSLY RECIEVING INPUTS //
 
-        Task task = ProcessInputAsync(driver, settings);
+        Task task = ProcessInputAsync();
 
         // EVERY 'waitTime' ms, IF BETTING IS AVAILABLE AND HASN'T BEEN DONE ALREADY, BET 'betAmount' SALT ON RANDOM SIDE //
 
@@ -141,7 +141,7 @@ class Program
         Console.Read();
     }
 
-    async Task ProcessInputAsync(IWebDriver driver, Settings settings)
+    async Task ProcessInputAsync()
     {
         InputParser inputParser = new(this);
 
