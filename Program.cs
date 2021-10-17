@@ -136,7 +136,7 @@ class Program
     {
         Console.Write(
             "\n\nAn error likely related to SaltyBetterSettings.json occured." +
-            "\nFill it out with both your SaltyBet login details and an absolute path to the FOLDER in which ChromeDriver.exe has been installed." +
+            "\nFill it out with your SaltyBet login details." +
             "\n\nPress any key to continue...");
         Console.Read();
     }
