@@ -37,12 +37,12 @@ class Program
 
         // CREATE CHROME DRIVER AND OPEN SALTYBET LOGIN PAGE //
 
-        if (File.Exists($"{settings.ChromeDriverPath}/ChromeDriver.exe"))
+        if (File.Exists("./ChromeDriver.exe"))
         {
             ChromeOptions options = new();
             options.AddArgument("--silent");
             options.AddArgument("--log-level=3");
-            driver = new ChromeDriver(settings.ChromeDriverPath, options)
+            driver = new ChromeDriver(".", options)
             {
                 Url = "https://www.saltybet.com/authenticate?signin=1"
             };
