@@ -1,8 +1,7 @@
 {
   "profiles": {
     "SaltyBetter": {
-      "commandName": "Project",
-      "workingDirectory": "G:\\C#Stuff\\SaltyBetter"
+      "commandName": "Project"
     }
   }
 }
