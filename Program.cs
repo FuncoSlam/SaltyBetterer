@@ -14,7 +14,7 @@ class Program
 
 	public IWebDriver driver;
 
-	readonly string jsonFilePath = "./SaltyBetterSettings.json";
+	readonly string jsonFilePath = ".\\SaltyBetterSettings.json";
 
 	readonly Random random = new();
 	bool hasBet = false;
@@ -22,10 +22,10 @@ class Program
 
 	public async Task Run()
 	{
+		Console.WriteLine(Directory.GetCurrentDirectory());
 
 		// CREATE OR LOAD SETTINGS FILE //
 
-		string jsonFilePath = "./SaltyBetterSettings.json";
 		if (File.Exists(jsonFilePath))
 		{
 			settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(jsonFilePath));
@@ -37,7 +37,7 @@ class Program
 
 		// CREATE CHROME DRIVER AND OPEN SALTYBET LOGIN PAGE //
 
-		if (File.Exists("./ChromeDriver.exe"))
+		if (File.Exists(".\\ChromeDriver.exe"))
 		{
 			ChromeOptions options = new();
 			options.AddArgument("--silent");
