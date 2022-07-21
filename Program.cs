@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Globalization;
 
 namespace SaltyBetter;
 
@@ -160,4 +161,10 @@ class Program
 		string tabs = new(lineBreakChar, Console.BufferWidth);
 		return $"{tabs}\n";
 	}
+
+	public int GetCurrentSalt()
+    {
+		string saltyString = driver.FindElement(By.Id("balance")).Text;
+		return int.Parse(saltyString, NumberStyles.AllowThousands);
+    }
 }

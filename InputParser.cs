@@ -1,11 +1,14 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SaltyBetter;
 
 class InputParser
 {
-    private Program program;
-    private Command[] commands;
+    private readonly Program program;
+    private readonly Command[] commands;
+    private List<(int salt, DateTime time)> bookmarks;
 
     public InputParser(Program program)
     {
@@ -16,8 +19,13 @@ class InputParser
             new ("refresh", new Action(RefreshCommand), "Safely refreshes the SaltyBet page"),
             new ("clear", new Action(ClearCommand), "Clears text from the console"),
             new ("bet", new Action<string>(BetCommand), "Changes the bet amount permanently, takes a number"),
-            new ("help", new Action(HelpCommand), "Displays all commands with descriptions, this is probably that one")
+            new ("help", new Action(HelpCommand), "Displays all commands with descriptions, this is probably that one"),
+            new ("bookmark", new Action(BookmarkCommand), "Creates a bookmark of current salt"),
+            new ("clearbookmarks", new Action(ClearBookmarksCommand), "Clears all bookmarks on record"),
+            new ("progress", new Action(ProgressCommand), "Displays all bookmarks along with current salt")
         };
+
+        bookmarks = new();
     }
 
     public void Parse(string[] input)
@@ -101,5 +109,30 @@ class InputParser
             Console.Write($"{commandNamePlusSpaces} - {command.Description}\n");
         }
         Console.Write($"\n");
+    }
+
+    private void BookmarkCommand()
+    {
+        int bookmarkedSalt = program.GetCurrentSalt();
+        DateTime timeOfBookmark = DateTime.Now;
+        bookmarks.Add((bookmarkedSalt, timeOfBookmark));
+    }
+
+    private void ProgressCommand()
+    {
+        int currentSalt = program.GetCurrentSalt();
+
+        foreach ((int salt, DateTime time)bookmark in bookmarks)
+        {
+            string formattedLine = string.Format("${0,-14} - {1}", bookmark.salt, bookmark.time);
+            Console.WriteLine(formattedLine);
+        }
+        string currentLine = string.Format("${0,-14} - {1}", currentSalt, DateTime.Now);
+        Console.WriteLine(currentLine);
+    }
+
+    private void ClearBookmarksCommand()
+    {
+        bookmarks.Clear();
     }
 }
