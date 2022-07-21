@@ -21,7 +21,7 @@ class InputParser
             new ("bet", new Action<string>(BetCommand), "Changes the bet amount permanently, takes a number"),
             new ("help", new Action(HelpCommand), "Displays all commands with descriptions, this is probably that one"),
             new ("bookmark", new Action(BookmarkCommand), "Creates a bookmark of current salt"),
-            new ("clearbookmarks", new Action(ClearBookmarksCommand), "Clears all bookmarks on record"),
+            new ("clearmarks", new Action(ClearBookmarksCommand), "Clears all bookmarks on record"),
             new ("progress", new Action(ProgressCommand), "Displays all bookmarks along with current salt")
         };
 
