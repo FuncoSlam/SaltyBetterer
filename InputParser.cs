@@ -1,4 +1,6 @@
 using System;
+using System.Text.Json;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,24 +10,34 @@ class InputParser
 {
     private readonly Program program;
     private readonly Command[] commands;
-    private List<(int salt, DateTime time)> bookmarks;
+    private List<Bookmark> bookmarks;
+    private string bookmarkFilePath;
+    private JsonSerializerOptions jsonSerializerOptions;
 
     public InputParser(Program program)
     {
         this.program = program;
 
         commands = new Command[] {
-            new ("exit", new Action(ExitCommand), "Exits the program"),
-            new ("refresh", new Action(RefreshCommand), "Safely refreshes the SaltyBet page"),
-            new ("clear", new Action(ClearCommand), "Clears text from the console"),
-            new ("bet", new Action<string>(BetCommand), "Changes the bet amount permanently, takes a number"),
-            new ("help", new Action(HelpCommand), "Displays all commands with descriptions, this is probably that one"),
-            new ("bookmark", new Action(BookmarkCommand), "Creates a bookmark of current salt"),
-            new ("clearmarks", new Action(ClearBookmarksCommand), "Clears all bookmarks on record"),
-            new ("progress", new Action(ProgressCommand), "Displays all bookmarks along with current salt")
+            new Command("exit", new Action(ExitCommand), "Exits the program"),
+            new Command("refresh", new Action(RefreshCommand), "Safely refreshes the SaltyBet page"),
+            new Command("clear", new Action(ClearCommand), "Clears text from the console"),
+            new Command("bet", new Action<string>(BetCommand), "Changes the bet amount permanently, takes a number"),
+            new Command("help", new Action(HelpCommand), "Displays all commands with descriptions, this is probably that one"),
+            new Command("bookmark", new Action(BookmarkCommand), "Creates a bookmark of current salt"),
+            new Command("clearmarks", new Action(ClearBookmarksCommand), "Clears all bookmarks on record"),
+            new Command("savemarks", new Action(SaveBookmarksCommand), "Saves current bookmarks to a file"),
+            new Command("loadmarks", new Action(LoadBookmarksCommand), "Overwrites current bookmarks with bookmarks file"),
+            new Command("viewmarks", new Action(ProgressCommand), "Displays all bookmarks along with current salt")
         };
 
+        bookmarkFilePath = "./bookmarks.json";
         bookmarks = new();
+
+        jsonSerializerOptions = new()
+        {
+            WriteIndented = true
+        };
     }
 
     public void Parse(string[] input)
@@ -115,24 +127,61 @@ class InputParser
     {
         int bookmarkedSalt = program.GetCurrentSalt();
         DateTime timeOfBookmark = DateTime.Now;
-        bookmarks.Add((bookmarkedSalt, timeOfBookmark));
+        bookmarks.Add(new(bookmarkedSalt, timeOfBookmark));
     }
 
     private void ProgressCommand()
     {
         int currentSalt = program.GetCurrentSalt();
 
-        foreach ((int salt, DateTime time)bookmark in bookmarks)
+        foreach (Bookmark bookmark in bookmarks)
         {
-            string formattedLine = string.Format("${0,-14} - {1}", bookmark.salt, bookmark.time);
+            string formattedLine = string.Format("${0,-14} - {1}", bookmark.Salt, bookmark.Time);
             Console.WriteLine(formattedLine);
         }
-        string currentLine = string.Format("${0,-14} - {1}", currentSalt, DateTime.Now);
+        string currentLine = string.Format("${0,-14} - {1}", currentSalt, "NOW");
         Console.WriteLine(currentLine);
     }
 
     private void ClearBookmarksCommand()
     {
         bookmarks.Clear();
+    }
+
+    private void LoadBookmarksCommand()
+    {
+        bookmarks.Clear();
+
+        string text = File.ReadAllText(bookmarkFilePath);
+
+        bookmarks = JsonSerializer.Deserialize<List<Bookmark>>(text, jsonSerializerOptions);
+    }
+
+    private void SaveBookmarksCommand()
+    {
+        string text = JsonSerializer.Serialize(bookmarks, jsonSerializerOptions);
+
+        File.WriteAllText(bookmarkFilePath, text);
+    }
+
+    private struct Bookmark
+    {
+        public int Salt { get; init; }
+        public DateTime Time { get; init; }
+        public string Comment { get; init; }
+
+        public Bookmark(int salt, DateTime time)
+        {
+            Salt = salt;
+            Time = time;
+            Comment = string.Empty;
+        }
+
+        public Bookmark(int salt, DateTime time, string comment)
+        {
+            Salt = salt;
+            Time = time;
+            Comment = comment;
+        }
     }
 }
