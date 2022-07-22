@@ -136,10 +136,10 @@ class InputParser
 
         foreach (Bookmark bookmark in bookmarks)
         {
-            string formattedLine = string.Format("${0,-14} - {1}", bookmark.Salt, bookmark.Time);
+            string formattedLine = string.Format("${0,-12} - {1,-12} - {2}", bookmark.Salt, bookmark.Time, bookmark.Comment);
             Console.WriteLine(formattedLine);
         }
-        string currentLine = string.Format("${0,-14} - {1}", currentSalt, "NOW");
+        string currentLine = string.Format("${0,-12} - {1,-12} - ", currentSalt, "NOW");
         Console.WriteLine(currentLine);
     }
 
