@@ -28,7 +28,7 @@ class InputParser
             new Command("clearmarks", new Action(ClearBookmarksCommand), "Clears all bookmarks on record"),
             new Command("savemarks", new Action(SaveBookmarksCommand), "Saves current bookmarks to a file"),
             new Command("loadmarks", new Action(LoadBookmarksCommand), "Overwrites current bookmarks with bookmarks file"),
-            new Command("viewmarks", new Action(ProgressCommand), "Displays all bookmarks along with current salt")
+            new Command("viewmarks", new Action(ViewmarkCommand), "Displays all bookmarks along with current salt")
         };
 
         bookmarkFilePath = "./bookmarks.json";
@@ -130,7 +130,7 @@ class InputParser
         bookmarks.Add(new(bookmarkedSalt, timeOfBookmark));
     }
 
-    private void ProgressCommand()
+    private void ViewmarkCommand()
     {
         int currentSalt = program.GetCurrentSalt();
 
