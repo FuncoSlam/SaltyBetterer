@@ -133,13 +133,14 @@ class InputParser
     private void ViewBookmarksCommand()
     {
         int currentSalt = program.GetCurrentSalt();
+        string formatString = "${0,-10} {1,-18} {2}";
 
         foreach (Bookmark bookmark in bookmarks)
         {
-            string formattedLine = string.Format("${0,-12} - {1,-12} - {2}", bookmark.Salt, bookmark.Time, bookmark.Comment);
+            string formattedLine = string.Format(formatString, bookmark.Salt, bookmark.Time, bookmark.Comment);
             Console.WriteLine(formattedLine);
         }
-        string currentLine = string.Format("${0,-12} - {1,-12} - ", currentSalt, "NOW");
+        string currentLine = string.Format(formatString, currentSalt, "NOW", string.Empty);
         Console.WriteLine(currentLine);
     }
 
