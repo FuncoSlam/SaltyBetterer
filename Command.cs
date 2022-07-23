@@ -6,7 +6,7 @@ class Command
 {
     public string Name { get; }
     public Delegate Function { get; }
-    public string Description = null;
+    public string Description { get; } = null;
 
     public const int MaxCommandNameLength = 14;
 
