@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Text.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace SaltyBetter;
 
@@ -123,7 +125,13 @@ class Program
 	static string[] UserPrompt()
 	{
 		Console.Write(">>> ");
-		return Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+		string input = Console.ReadLine();
+		string[] tokens = input.Split('"')
+					 .Select((element, index) => index % 2 == 0  // If even index
+										   ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)  // Split the item
+										   : new string[] { element })  // Keep the entire item
+					 .SelectMany(element => element).ToArray();
+		return tokens;
 	}
 
 	public void UpdateSettingsJson()
