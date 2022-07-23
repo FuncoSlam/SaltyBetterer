@@ -152,7 +152,7 @@ class Program
 
 			inputParser.Parse(input);
 
-			Console.WriteLine(LineBreak('-'));
+			Console.WriteLine();
 		}
 	}
 
