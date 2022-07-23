@@ -145,7 +145,7 @@ class InputParser
     private void ViewBookmarksCommand()
     {
         int currentSalt = program.GetCurrentSalt();
-        const string formatString = "${0,-10} {1,-22} {2}";
+        const string formatString = "${0,-10} {1,-10} {2}";
 
         foreach (Bookmark bookmark in bookmarks)
         {
