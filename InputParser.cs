@@ -11,8 +11,8 @@ class InputParser
     private readonly Program program;
     private readonly Command[] commands;
     private List<Bookmark> bookmarks;
-    private string bookmarkFilePath;
-    private JsonSerializerOptions jsonSerializerOptions;
+    private readonly string bookmarkFilePath;
+    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public InputParser(Program program)
     {
@@ -24,7 +24,7 @@ class InputParser
             new Command("clear", new Action(ClearCommand), "Clears text from the console"),
             new Command("bet", new Action<string>(BetCommand), "Changes the bet amount permanently, takes a number"),
             new Command("help", new Action(HelpCommand), "Displays all commands with descriptions, this is probably that one"),
-            new Command("bookmark", new Action(BookmarkCommand), "Creates a bookmark of current salt"),
+            new Command("bookmark", new Action<string>(BookmarkCommand), "Creates a bookmark of current salt"),
             new Command("clearmarks", new Action(ClearBookmarksCommand), "Clears all bookmarks on record"),
             new Command("savemarks", new Action(SaveBookmarksCommand), "Saves current bookmarks to a file"),
             new Command("loadmarks", new Action(LoadBookmarksCommand), "Overwrites current bookmarks with bookmarks file"),
@@ -53,6 +53,7 @@ class InputParser
             }
             if (input[0] == command.Name)
             {
+                // TODO: Find a way around this try-catch nest
                 if (input.Length > 1)
                 {
                     try
@@ -75,8 +76,16 @@ class InputParser
                     }
                     catch
                     {
-                        DefaultCommand();
-                        return;
+                        try
+                        {
+                            command.Function.DynamicInvoke(string.Empty);
+                            return;
+                        }
+                        catch
+                        {
+                            DefaultCommand();
+                            return;
+                        }
                     }
                 }
 
@@ -108,26 +117,29 @@ class InputParser
         Console.Clear();
     }
 
-    private void DefaultCommand()
+    private static void DefaultCommand()
     {
-        Console.WriteLine("\nInvalid input");
+        Console.WriteLine(
+            "Invalid command\n" +
+            "Enter 'help' for valid commands\n");
     }
 
     private void HelpCommand()
     {
+        const string formatString = "{0,-14} {1,-18}";
+
         foreach (Command command in commands)
         {
-            string commandNamePlusSpaces = $"\"{command.Name}\"".PadRight(Command.MaxCommandNameLength);
-            Console.Write($"{commandNamePlusSpaces} - {command.Description}\n");
+            Console.WriteLine(formatString, command.Name, command.Description);
         }
-        Console.Write($"\n");
+        Console.WriteLine();
     }
 
-    private void BookmarkCommand()
+    private void BookmarkCommand(string description = "")
     {
         int bookmarkedSalt = program.GetCurrentSalt();
         DateTime timeOfBookmark = DateTime.Now;
-        bookmarks.Add(new(bookmarkedSalt, timeOfBookmark));
+        bookmarks.Add(new(bookmarkedSalt, timeOfBookmark, description));
     }
 
     private void ViewBookmarksCommand()
